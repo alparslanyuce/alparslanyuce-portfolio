@@ -28,7 +28,7 @@ header a{
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
   gap:20px;
   padding:40px;
 }
@@ -51,13 +51,15 @@ h3{
 
 .case{
   background:#0f172a;
-  padding:10px;
-  border-radius:8px;
+  padding:12px;
+  border-radius:10px;
   font-size:13px;
+  color:#cbd5e1;
   margin-bottom:10px;
 }
 
 .btn{
+  display:inline-block;
   padding:8px 12px;
   background:#3b82f6;
   color:white;
@@ -82,16 +84,25 @@ h3{
 
 .modal-content{
   background:#0f172a;
-  margin:5% auto;
+  margin:4% auto;
   padding:20px;
   width:90%;
   max-height:85%;
   overflow:auto;
+  border-radius:10px;
+  border:1px solid #1f2937;
 }
 
 pre{
   white-space:pre;
   font-size:12px;
+  color:#e5e7eb;
+}
+
+.close{
+  float:right;
+  cursor:pointer;
+  font-size:18px;
 }
 </style>
 </head>
@@ -100,80 +111,110 @@ pre{
 
 <header>
   <div><b>Alparslan Yüce SQL Portfolio</b></div>
+  <nav>
+    <a href="index.html">CV</a>
+    <a href="sql.html">SQL</a>
+  </nav>
 </header>
 
 <div class="grid">
 
-<!-- CARD 1 -->
+<!-- SQL 1 -->
 <div class="card">
 <div class="tag">FUNCTION</div>
-<h3>Forecast Control</h3>
+<h3>Stock Forecast Control</h3>
 
 <div class="case">
-Stok tahmin kontrol fonksiyonu
+<b>Problem:</b> Stok tahmini hatalı sipariş riskine yol açıyor.<br><br>
+<b>Solution:</b> Forecast function ile aylık planlama kontrolü yapıldı.<br><br>
+<b>Impact:</b> Fazla sipariş ve stok maliyeti azaltıldı.
 </div>
 
 <div class="btn" onclick="show('sql1')">Show Full SQL</div>
 </div>
 
-<!-- CARD 2 -->
+<!-- SQL 2 -->
 <div class="card">
 <div class="tag">MRP</div>
-<h3>Lead Time</h3>
+<h3>Lead Time Analysis</h3>
 
 <div class="case">
-Sipariş teslim analizleri
+<b>Problem:</b> Tedarik süreci net değil.<br><br>
+<b>Solution:</b> DATEDIFF ile süreç analizi yapıldı.<br><br>
+<b>Impact:</b> Planlama doğruluğu arttı.
 </div>
 
 <div class="btn" onclick="show('sql2')">Show Full SQL</div>
 </div>
 
-<!-- CARD 3 -->
+<!-- SQL 3 -->
 <div class="card">
 <div class="tag">STOCK</div>
-<h3>Movement</h3>
+<h3>Stock Movement</h3>
 
 <div class="case">
-Depo giriş çıkış analizi
+<b>Problem:</b> Depo hareketleri karmaşık.<br><br>
+<b>Solution:</b> Giriş/çıkış net hesaplandı.<br><br>
+<b>Impact:</b> Stok doğruluğu sağlandı.
 </div>
 
 <div class="btn" onclick="show('sql3')">Show Full SQL</div>
 </div>
 
-<!-- CARD 4 -->
+<!-- SQL 4 -->
 <div class="card">
 <div class="tag">INVOICE</div>
-<h3>Fatura Analizi</h3>
+<h3>Invoice Analysis</h3>
 
 <div class="case">
-Fatura stok ilişkisi
+<b>Problem:</b> Fatura bazlı stok görünmüyor.<br><br>
+<b>Solution:</b> FATUIRS join ile analiz yapıldı.<br><br>
+<b>Impact:</b> Finansal kontrol sağlandı.
 </div>
 
 <div class="btn" onclick="show('sql4')">Show Full SQL</div>
 </div>
 
-<!-- CARD 5 -->
+<!-- SQL 5 -->
 <div class="card">
-<div class="tag">SERİ</div>
-<h3>Serili / Serisiz</h3>
+<div class="tag">SERIAL INSERT</div>
+<h3>Serial Stock Insert</h3>
 
 <div class="case">
-UNION ALL stok yapısı
+<b>Problem:</b> Serili stok aktarımı zor.<br><br>
+<b>Solution:</b> TBLSERITRA insert optimizasyonu.<br><br>
+<b>Impact:</b> Veri aktarımı standardize edildi.
 </div>
 
 <div class="btn" onclick="show('sql5')">Show Full SQL</div>
 </div>
 
-<!-- CARD 6 -->
+<!-- SQL 6 -->
 <div class="card">
 <div class="tag">BOM</div>
-<h3>Ürün Kullanım</h3>
+<h3>Material Usage Analysis</h3>
 
 <div class="case">
-Exists / Not Exists analiz
+<b>Problem:</b> Ürün kullanım bağımlılığı bilinmiyor.<br><br>
+<b>Solution:</b> EXISTS / NOT EXISTS ile analiz yapıldı.<br><br>
+<b>Impact:</b> Üretim kontrolü güçlendi.
 </div>
 
 <div class="btn" onclick="show('sql6')">Show Full SQL</div>
+</div>
+
+<!-- SQL 7 -->
+<div class="card">
+<div class="tag">WAREHOUSE</div>
+<h3>Serial vs Non-Serial Stock</h3>
+
+<div class="case">
+<b>Problem:</b> Serili / serisiz stok ayrıydı.<br><br>
+<b>Solution:</b> UNION ALL ile birleşik yapı kuruldu.<br><br>
+<b>Impact:</b> Depo görünürlüğü arttı.
+</div>
+
+<div class="btn" onclick="show('sql7')">Show Full SQL</div>
 </div>
 
 </div>
@@ -181,13 +222,14 @@ Exists / Not Exists analiz
 <!-- MODAL -->
 <div id="modal" class="modal">
 <div class="modal-content">
+<span class="close" onclick="closeModal()">✖</span>
 <pre id="box"></pre>
 </div>
 </div>
 
 <script>
 
-/* 🔥 100% REAL SQL DATA (NO CUT, NO EDIT) */
+/* 🔥 FULL REAL SQL - NO EDIT NO CUT */
 const SQL = {
 
 sql1: `CREATE FUNCTION dbo.EBFNC_SIPFORECAST1  
@@ -235,80 +277,87 @@ BEGIN
                 (10, t.MIKTAR_10),  
                 (11, t.MIKTAR_11),  
                 (12, t.MIKTAR_12)  
-        ) v(AyNumarasi, Miktar)  
+        ) v(AyNumarasi,Miktar)
     )  
-
-    SELECT @FORECAST_MIKTAR = SUM(Miktar)
-    FROM FORECAST;
+    SELECT @FORECAST_MIKTAR = ISNULL(SUM(Miktar),0) FROM FORECAST;  
 
     IF (@SIP_BAKIYE + @MIKTAR) > @FORECAST_MIKTAR  
-        RETURN 1;
+        RETURN 1;  
 
-    RETURN 0;
+    RETURN 0;  
 END`,
 
-sql2: `SELECT 
-    t.STOK_KODU,
-    t.TARIH,
-    t.TESTAR,
-    t.HABERTAR,
-    t.SIPTAR,
-    DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
-    DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark,
-    DATEDIFF(DAY, t.HABERTAR, t.TESTAR) AS bildirim_teslim_fark
-FROM TBLMRPSIP t`,
+sql2: `SELECT t.STOK_KODU, t.TARIH AS ihtiyac_tarihi, t.TESTAR AS teslim_tarihi,
+t.HABERTAR AS bildirim_tarihi, t.SIPTAR AS siparis_tarihi,
+-- Farklar kaç gün? DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
+DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark, 
+DATEDIFF(DAY, t.HABERTAR, t.TESTAR) AS bildirim_teslim_fark, 
+-- Stok temin süresi s.TEMIN_SURESI,
+-- Cari nakliye süresi c.NAKLIYE_SURESI FROM TBLMRPSIP t 
+LEFT JOIN TBLSTSABIT s ON s.STOK_KODU = t.STOK_KODU 
+AND s.SUBE_KODU = t.ISLETME_KODU LEFT JOIN TBLCARISTOK c 
+ON c.CARI_KOD = t.SATICI_KODU WHERE t.STOK_KODU LIKE 'LF024013000403%'
+ORDER BY t.TARIH`,
 
-sql3: `SELECT
-    STOK_KODU,
-    DEPO_KODU,
-    SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS,
-    SUM(CASE WHEN STHAR_GCKOD='C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS,
-    SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE -STHAR_GCMIK END) AS NET
-FROM TBLSTHAR
-GROUP BY STOK_KODU, DEPO_KODU`,
+sql3: `SELECT STOK_KODU, DEPO_KODU, 
+SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK ELSE 0 END)
+AS GIRIS_MIKTAR, SUM(CASE WHEN STHAR_GCKOD = 'C' THEN STHAR_GCMIK ELSE 0 END) 
+AS CIKIS_MIKTAR, SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK WHEN STHAR_GCKOD = 'C'
+THEN -STHAR_GCMIK ELSE 0 END) AS NET_MIKTAR FROM TBLSTHAR WHERE STOK_KODU = 'LF022602088026-Y' 
+AND DEPO_KODU = '101' GROUP BY STOK_KODU, DEPO_KODU;`,
 
-sql4: `SELECT
-F.SUBE_KODU,
-F.TARIH,
-F.FATIRS_NO,
-F.CARI_KODU,
-F.FTIRSIP,
-S.STOK_KODU,
-S.STHAR_GCMIK
-FROM TBLSTHAR S
-LEFT JOIN TBLFATUIRS F ON F.FATIRS_NO = S.FISNO`,
+sql4: `SELECT F.SUBE_KODU, F.TARIH, F.FATIRS_NO AS BELGE_NO, F.CARI_KODU, CASE WHEN F.FTIRSIP = '1'
+THEN 'SATIS FATURASI' WHEN F.FTIRSIP = '2'THEN 'ALIS FATURASI' WHEN F.FTIRSIP = '3' 
+THEN 'SATIS IRSALIYE' WHEN F.FTIRSIP = '4' THEN 'ALIS IRSALIYE' WHEN F.FTIRSIP IN (' 8','9')
+THEN 'DEPOLAR ARASI TRANSFER' END AS BELGE_TIPI, S.STOK_KODU, S.STHAR_GCMIK AS MIKTAR, S.STHAR_NF AS BIRIM_FIYAT 
+FROM TBLSTHAR S WITH(NOLOCK) LEFT JOIN TBLFATUIRS F WITH(NOLOCK) ON F.FATIRS_NO = S.FISNO
+WHERE S.STOK_KODU IN ('LF040006037551', 'LF040006039501', 'LF040135102064', 'LF043540500600', 
+'LF045152022224', 'LF045790012000', 'LF288430167', 'LF288711953', 'LF288712185', 'LF288712584',
+'TH630C1_FN', 'LF024013000082', 'LF024013000139', 'LF024013000378', 'LF030070062016',
+'LF040006037101', 'LF040006037104', 'LF040006037161', 'LF040006037164', 'LF040006037174', 
+'LF040006037511', 'LF040006037550') ORDER BY S.STOK_KODU, F.TARIH`,
 
-sql5: `-- SERİSİZ
-SELECT
-    sh.depo_kodu,
-    sh.stok_kodu,
-    sk.stok_adi,
-    NULL AS seri_no,
-    SUM(CASE WHEN sh.sthar_gckod='G' THEN sh.sthar_gcmik ELSE -sh.sthar_gcmik END)
-FROM tblsthar sh
-JOIN TBLSTSABIT sk ON sk.stok_kodu = sh.stok_kodu
-GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi
+sql5: `INSERT INTO [dbo].[TBLSERITRA] ([KAYIT_TIPI] ,[SERI_NO] ,[STOK_KODU]
+,[STRA_INC] ,[TARIH] ,[ACIK1] ,[ACIK2] ,[GCKOD] ,[MIKTAR] ,[MIKTAR2] ,[BELGENO]
+,[BELGETIP] ,[HARACIK] ,[SUBE_KODU] ,[DEPOKOD] ,[SIPNO] ,[KARSISERI] ,[YEDEK1] 
+,[YEDEK2] ,[YEDEK3] ,[YEDEK4] ,[YEDEK5] ,[YEDEK6] ,[YEDEK7] ,[YEDEK8] ,[ONAYTIPI]
+,[ONAYNUM] ,[ACIK3] ,[SERI_NO_3] ,[SERI_NO_4] ,[ACIKLAMA_4] ,[ACIKLAMA_5] ,[SON_KULLANMA_TARIHI] 
+,[PARENT_ID] ,[INIT_MIKTAR] ,[AKTARILAN_MIKTAR] ,[CIKISKONTROL] ,[BARKOD]) select [KAYIT_TIPI]
+,'2411C0033003' ,'845007010500' ,'32568' ,'2025-01-01 00:00:00.000' ,[ACIK1] ,[ACIK2] ,'G' ,'1' ,[MIKTAR2] 
+,'SAYIMISLEME0001' ,[BELGETIP] ,[HARACIK] ,[SUBE_KODU] ,'135' ,[SIPNO] ,[KARSISERI] ,[YEDEK1] ,[YEDEK2] 
+,[YEDEK3] ,[YEDEK4] ,[YEDEK5] ,[YEDEK6] ,[YEDEK7] ,[YEDEK8] ,[ONAYTIPI] ,[ONAYNUM] ,[ACIK3] ,[SERI_NO_3]
+,[SERI_NO_4] ,[ACIKLAMA_4] ,[ACIKLAMA_5] ,[SON_KULLANMA_TARIHI] ,[PARENT_ID] ,[INIT_MIKTAR] ,[AKTARILAN_MIKTAR]
+,[CIKISKONTROL] ,[BARKOD] from tblSERITRA WHERE STOK_KODU = '845007010500'AND STRA_INC='47737'`,
 
-UNION ALL
+sql6: `SELECT RM.HAM_KODU, SBHAM.STOK_ADI, SBHAM.GRUP_KODU, SBHAM.MUH_DETAYKODU, 
+CR.KULL5S FROM TBLSTOKURM RM INNER JOIN TBLCARISTOK CR ON CR.STOK_KODU = RM.HAM_KODU INNER JOIN 
+TBLSTSABIT SBHAM ON SBHAM.STOK_KODU = RM.HAM_KODU WHERE ISNULL(CR.KULL5S,'') LIKE 'TIP3%' 
+-- Keort / Keortevo ürünlerinde kullanılıyor mu AND EXISTS
+( SELECT 1 FROM TBLSTOKURM U INNER JOIN TBLSTSABIT SB ON SB.STOK_KODU = U.MAMUL_KODU 
+WHERE U.HAM_KODU = RM.HAM_KODU AND SB.MUH_DETAYKODU IN ('201','2807') AND 
+( SB.GRUP_KODU LIKE 'Keort%' OR SB.GRUP_KODU LIKE 'Keortevo%' ) )
+-- Başka ürünlerde kullanılıyorsa alma AND NOT EXISTS 
+( SELECT 1 FROM TBLSTOKURM X INNER JOIN TBLSTSABIT SB2 ON SB2.STOK_KODU = X.MAMUL_KODU
+WHERE X.HAM_KODU = RM.HAM_KODU AND NOT ( SB2.MUH_DETAYKODU IN ('201','2807')
+AND ( SB2.GRUP_KODU LIKE 'Keort%' OR SB2.GRUP_KODU LIKE 'Keortevo%' ) ) ) 
+GROUP BY RM.HAM_KODU, SBHAM.STOK_ADI, CR.KULL5S, SBHAM.GRUP_KODU, SBHAM.MUH_DETAYKODU ORDER BY RM.HAM_KODU`,
 
--- SERİLİ
-SELECT
-    ss.depokod,
-    ss.stok_kodu,
-    sk.stok_adi,
-    ss.seri_no,
-    SUM(CASE WHEN ss.gckod='G' THEN ss.miktar ELSE -ss.miktar END)
-FROM tblseritra ss
-JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu
-GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no`,
+sql7: `SERİSİZ 
+SELECT sh.depo_kodu, sh.stok_kodu, 
+sk.stok_adi, NULL AS seri_no, 
+SUM( CASE WHEN sh.sthar_gckod = 'G' THEN 
+sh.sthar_gcmik WHEN sh.sthar_gckod = 'C' THEN 
+-sh.sthar_gcmik ELSE 0 END ) AS miktar 
+FROM tblsthar sh JOIN TBLSTSABIT sk ON 
+sk.stok_kodu = sh.stok_kodu WHERE sh.depo_kodu = 166 
+GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi UNION ALL -- 
+SERİLİ (örnek) 
+SELECT ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no, 
+SUM( CASE WHEN ss.gckod = 'G' THEN ss.miktar WHEN ss.gckod = 'C' THEN -ss.miktar ELSE 0 END ) 
+AS miktar FROM tblseritra ss JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu WHERE ss.depokod = 166
+GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no HAVING SUM( CASE WHEN 
+ss.gckod = 'G' THEN ss.miktar WHEN ss.gckod = 'C' THEN -ss.miktar ELSE 0 END ) > 0`
 
-sql6: `SELECT 
-    RM.HAM_KODU,
-    SBHAM.STOK_ADI,
-    CR.KULL5S
-FROM TBLSTOKURM RM
-INNER JOIN TBLCARISTOK CR ON CR.STOK_KODU = RM.HAM_KODU
-WHERE EXISTS (SELECT 1 FROM TBLSTOKURM)`
 };
 
 function show(k){
@@ -316,9 +365,13 @@ function show(k){
   document.getElementById("modal").style.display="block";
 }
 
+function closeModal(){
+  document.getElementById("modal").style.display="none";
+}
+
 window.onclick=function(e){
   if(e.target.id==="modal"){
-    document.getElementById("modal").style.display="none";
+    closeModal();
   }
 }
 </script>
