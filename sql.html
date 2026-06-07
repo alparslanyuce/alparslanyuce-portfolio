@@ -38,7 +38,7 @@ header a {
 
 .grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
   gap:20px;
   padding:40px;
 }
@@ -99,17 +99,16 @@ footer {
 </header>
 
 <div class="hero">
-<h1>SQL / ERP Portfolio</h1>
-<p>Real ERP Queries • Production • Inventory • Forecast • Supply Chain</p>
+<h1>REAL ERP SQL PORTFOLIO</h1>
+<p>Production • Inventory • Forecast • Supply Chain • ERP Logic</p>
 </div>
 
 <div class="grid">
 
-<!-- FORECAST FUNCTION -->
+<!-- 1 FORECAST FUNCTION -->
 <div class="card">
 <span class="tag">FORECAST</span>
 <h3>Demand Forecast Function</h3>
-<p>ERP aylık tahmin ve sipariş karşılaştırma fonksiyonu</p>
 
 <div class="sql">
 CREATE FUNCTION dbo.EBFNC_SIPFORECAST1  
@@ -121,81 +120,184 @@ CREATE FUNCTION dbo.EBFNC_SIPFORECAST1
 RETURNS INT  
 AS  
 BEGIN  
-
+  
     DECLARE @SONUC INT = 0  
     DECLARE @AY INT  
     DECLARE @YIL INT  
-
+  
     DECLARE @FORECAST_MIKTAR DECIMAL(18,2) = 0  
     DECLARE @SIP_BAKIYE DECIMAL(18,2) = 0  
-
+  
     SET @AY = MONTH(@TARIH)  
     SET @YIL = YEAR(@TARIH)  
-
+  
     ;WITH FORECAST AS  
     (  
-        SELECT t.STOK_KODU, v.AyNumarasi,
-        v.Miktar
-        FROM TBLSIP12TMP t
-        CROSS APPLY (VALUES
-            (1,t.MIKTAR_1),(2,t.MIKTAR_2),(3,t.MIKTAR_3),
-            (4,t.MIKTAR_4),(5,t.MIKTAR_5),(6,t.MIKTAR_6),
-            (7,t.MIKTAR_7),(8,t.MIKTAR_8),(9,t.MIKTAR_9),
-            (10,t.MIKTAR_10),(11,t.MIKTAR_11),(12,t.MIKTAR_12)
-        ) v(AyNumarasi,Miktar)
-        WHERE t.STOK_KODU = @STOK_KODU
-    )
-    SELECT @FORECAST_MIKTAR = SUM(Miktar)
-    FROM FORECAST
-    WHERE AyNumarasi = @AY;
-
-    IF (@FORECAST_MIKTAR < @MIKTAR)
-        SET @SONUC = 1;
-
-    RETURN @SONUC;
-
-END
+        SELECT   
+            t.STOK_KODU,  
+            v.AyNumarasi,  
+            CASE   
+                WHEN v.AyNumarasi < MONTH(GETDATE())   
+                    THEN YEAR(GETDATE()) + 1  
+                ELSE YEAR(GETDATE())  
+            END AS YIL,  
+            v.Miktar  
+        FROM TBLSIP12TMP t  
+        CROSS APPLY  
+        (  
+            VALUES  
+                (1 , t.MIKTAR_1),  
+                (2 , t.MIKTAR_2),  
+                (3 , t.MIKTAR_3),  
+                (4 , t.MIKTAR_4),  
+                (5 , t.MIKTAR_5),  
+                (6 , t.MIKTAR_6),  
+                (7 , t.MIKTAR_7),  
+                (8 , t.MIKTAR_8),  
+                (9 , t.MIKTAR_9),  
+                (10, t.MIKTAR_10),  
+                (11, t.MIKTAR_11),  
+                (12, t.MIKTAR_12)  
+        ) v(AyNumarasi, Miktar)  
+        WHERE t.STOK_KODU = @STOK_KODU  
+    )  
+    SELECT   
+        @FORECAST_MIKTAR = ISNULL(SUM(Miktar),0)  
+    FROM FORECAST  
+    WHERE AyNumarasi = @AY  
+    AND YIL = @YIL  
+  
+    SELECT   
+        @SIP_BAKIYE = ISNULL(SUM(A.STHAR_GCMIK - A.FIRMA_DOVTUT),0)  
+    FROM TBLSIPATRA A WITH(NOLOCK)  
+    WHERE   
+        A.STOK_KODU = @STOK_KODU  
+        AND A.STHAR_FTIRSIP = '6'  
+        AND A.STHAR_HTUR = 'H'  
+        AND MONTH(A.D_YEDEK10) = @AY  
+        AND YEAR(A.D_YEDEK10) = @YIL  
+        AND (A.STHAR_GCMIK - A.FIRMA_DOVTUT) > 0  
+  
+    IF (@SIP_BAKIYE + @MIKTAR) > @FORECAST_MIKTAR  
+    BEGIN  
+        SET @SONUC = 1  
+    END  
+  
+    RETURN @SONUC  
+  
+END  
 </div>
 </div>
 
-<!-- INVENTORY -->
+<!-- 2 MRP -->
+<div class="card">
+<span class="tag">MRP</span>
+<h3>MRP Timing Analysis</h3>
+
+<div class="sql">
+SELECT 
+    t.STOK_KODU,
+    t.TARIH AS ihtiyac_tarihi,
+    t.TESTAR AS teslim_tarihi,
+    t.HABERTAR AS bildirim_tarihi,
+    t.SIPTAR AS siparis_tarihi,
+    DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
+    DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark,
+    DATEDIFF(DAY, t.HABERTAR, t.TESTAR) AS bildirim_teslim_fark,
+    s.TEMIN_SURESI,
+    c.NAKLIYE_SURESI
+FROM TBLMRPSIP t
+LEFT JOIN TBLSTSABIT s ON s.STOK_KODU = t.STOK_KODU
+                       AND s.SUBE_KODU = t.ISLETME_KODU
+LEFT JOIN TBLCARISTOK c ON c.CARI_KOD = t.SATICI_KODU
+WHERE t.STOK_KODU LIKE 'LF024013000403%'
+ORDER BY t.TARIH
+</div>
+</div>
+
+<!-- 3 INVENTORY -->
 <div class="card">
 <span class="tag">INVENTORY</span>
-<h3>Stock Movement Analysis</h3>
-<p>Depo giriş/çıkış ve net stok hesaplama</p>
+<h3>Stock Movement</h3>
 
 <div class="sql">
 SELECT
-STOK_KODU,
-DEPO_KODU,
-SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE -STHAR_GCMIK END) AS NET
+    STOK_KODU,
+    DEPO_KODU,
+    SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS_MIKTAR,
+    SUM(CASE WHEN STHAR_GCKOD = 'C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS_MIKTAR,
+    SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK 
+             WHEN STHAR_GCKOD = 'C' THEN -STHAR_GCMIK 
+             ELSE 0 END) AS NET_MIKTAR
 FROM TBLSTHAR
+WHERE STOK_KODU = 'LF022602088026-Y'
+  AND DEPO_KODU = '101'
 GROUP BY STOK_KODU, DEPO_KODU;
 </div>
 </div>
 
-<!-- MRP -->
+<!-- 4 INVOICE -->
 <div class="card">
-<span class="tag">MRP</span>
-<h3>Lead Time Analysis</h3>
+<span class="tag">FINANCE</span>
+<h3>Invoice Stock Relation</h3>
 
 <div class="sql">
 SELECT
-STOK_KODU,
-DATEDIFF(DAY,SIPTAR,TARIH) AS FARK
-FROM TBLMRPSIP;
+F.SUBE_KODU,
+F.TARIH,
+F.FATIRS_NO AS BELGE_NO,
+F.CARI_KODU,
+CASE 
+WHEN F.FTIRSIP = '1' THEN 'SATIS FATURASI'
+WHEN F.FTIRSIP = '2'THEN 'ALIS FATURASI'
+WHEN F.FTIRSIP = '3' THEN 'SATIS IRSALIYE'
+WHEN F.FTIRSIP = '4' THEN 'ALIS IRSALIYE'
+WHEN F.FTIRSIP IN (' 8','9') THEN 'DEPOLAR ARASI TRANSFER'
+END AS BELGE_TIPI,
+S.STOK_KODU,
+S.STHAR_GCMIK AS MIKTAR,
+S.STHAR_NF AS BIRIM_FIYAT
+FROM TBLSTHAR S WITH(NOLOCK)
+LEFT JOIN TBLFATUIRS F WITH(NOLOCK)
+ON F.FATIRS_NO = S.FISNO
+WHERE S.STOK_KODU IN (...)
+ORDER BY S.STOK_KODU, F.TARIH
 </div>
 </div>
 
-<!-- SERIAL -->
+<!-- 5 SERİ -->
 <div class="card">
-<span class="tag">INVENTORY</span>
-<h3>Serial / Non-Serial Stock</h3>
+<span class="tag">SERIAL</span>
+<h3>Serial / Non-Serial Stock Merge</h3>
 
 <div class="sql">
-SELECT * FROM TBLSTHAR
+SELECT
+    sh.depo_kodu,
+    sh.stok_kodu,
+    sk.stok_adi,
+    NULL AS seri_no,
+    SUM(CASE WHEN sh.sthar_gckod = 'G' THEN sh.sthar_gcmik
+             WHEN sh.sthar_gckod = 'C' THEN -sh.sthar_gcmik
+             ELSE 0 END) AS miktar
+FROM tblsthar sh
+JOIN TBLSTSABIT sk ON sk.stok_kodu = sh.stok_kodu
+WHERE sh.depo_kodu = 166
+GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi
+
 UNION ALL
-SELECT * FROM TBLSERITRA;
+
+SELECT
+    ss.depokod,
+    ss.stok_kodu,
+    sk.stok_adi,
+    ss.seri_no,
+    SUM(CASE WHEN ss.gckod = 'G' THEN ss.miktar
+             WHEN ss.gckod = 'C' THEN -ss.miktar
+             ELSE 0 END) AS miktar
+FROM tblseritra ss
+JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu
+WHERE ss.depokod = 166
+GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no
 </div>
 </div>
 
