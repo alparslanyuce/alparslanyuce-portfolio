@@ -1,3 +1,4 @@
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -5,22 +6,25 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* BODY */
 body {
   background: #0b1220;
   color: #e5e7eb;
   line-height: 1.6;
 }
 
+/* HEADER */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 60px;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   border-bottom: 1px solid #1f2937;
+  z-index: 10;
 }
 
 .logo {
@@ -40,14 +44,15 @@ nav a:hover {
   color: #60a5fa;
 }
 
+/* HERO */
 .hero {
   text-align: center;
-  padding: 100px 20px;
+  padding: 90px 20px;
   background: radial-gradient(circle at top, #1e293b, #0b1220);
 }
 
 .hero h1 {
-  font-size: 48px;
+  font-size: 42px;
   margin-bottom: 10px;
 }
 
@@ -58,10 +63,11 @@ nav a:hover {
 
 .subtext {
   max-width: 700px;
-  margin: 0 auto;
+  margin: 10px auto 0;
   color: #cbd5e1;
 }
 
+/* BUTTON */
 .btn {
   display: inline-block;
   margin-top: 20px;
@@ -70,48 +76,84 @@ nav a:hover {
   color: white;
   border-radius: 8px;
   text-decoration: none;
+  transition: 0.3s;
 }
 
 .btn:hover {
   background: #2563eb;
+  transform: translateY(-2px);
 }
 
+/* GRID LAYOUT (KRİTİK FIX) */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   padding: 60px;
+  align-items: start;
 }
 
+/* CARD */
 .card {
   background: rgba(30, 41, 59, 0.6);
-  padding: 25px;
+  padding: 20px;
   border-radius: 12px;
+  border: 1px solid #1f2937;
+
+  /* 🔥 KRİTİK TAŞMA FIX */
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* CARD TEXT */
+.card h3 {
+  color: #93c5fd;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+/* SQL CODE BLOCK (EN ÖNEMLİ) */
+pre {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+
+  overflow-x: auto;        /* yatay scroll */
+  max-width: 100%;         /* kart dışına çıkmaz */
+
+  white-space: pre-wrap;   /* taşmayı engeller */
+  word-break: break-word;  /* uzun satır kırılır */
+
+  font-size: 13px;
   border: 1px solid #1f2937;
 }
 
-.card h3 {
-  color: #93c5fd;
-}
-
+/* FOOTER */
 footer {
   text-align: center;
   padding: 30px;
   border-top: 1px solid #1f2937;
   color: #9ca3af;
+  margin-top: 40px;
 }
 
-pre {
-  background: #0f172a;
-  padding: 15px;
-  border-radius: 10px;
-  overflow-x: auto;
-  white-space: pre;
-  font-size: 13px;
-  border: 1px solid #1f2937;
-}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+  }
 
-.card {
-  max-width: 100%;
-  overflow-wrap: break-word;
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .grid {
+    padding: 20px;
+  }
 }
