@@ -35,7 +35,7 @@ header a {
 /* GRID */
 .grid {
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
   gap:20px;
   padding:40px;
 }
@@ -63,53 +63,17 @@ p {
   font-size:14px;
 }
 
-/* BUTTON */
-.btn {
-  margin-top:10px;
-  display:inline-block;
-  padding:8px 12px;
-  background:#3b82f6;
-  color:white;
-  border-radius:6px;
-  text-decoration:none;
-  cursor:pointer;
-}
-
-.btn:hover {
-  background:#2563eb;
-}
-
-/* MODAL */
-.modal {
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.8);
-}
-
-.modal-content {
+.sql {
   background:#0f172a;
-  margin:5% auto;
-  padding:20px;
-  width:80%;
-  max-height:80%;
-  overflow:auto;
+  padding:12px;
   border-radius:10px;
-  border:1px solid #1f2937;
+  overflow:auto;
   white-space:pre;
   font-size:12px;
-}
-
-.close {
-  float:right;
-  cursor:pointer;
-  color:#fff;
-  font-size:20px;
+  border:1px solid #1f2937;
 }
 </style>
+
 </head>
 
 <body>
@@ -124,15 +88,12 @@ p {
 
 <div class="grid">
 
-<!-- FORECAST -->
+<!-- 1 FORECAST FUNCTION -->
 <div class="card">
-<div class="tag">FORECAST</div>
+<div class="tag">FUNCTION</div>
 <h3>Demand Forecast Function</h3>
-<p>ERP aylık tahmin ve sipariş kontrol fonksiyonu</p>
 
-<button class="btn" onclick="openModal('sql1')">View Full SQL</button>
-
-<pre id="sql1" style="display:none">
+<div class="sql">
 CREATE FUNCTION dbo.EBFNC_SIPFORECAST1  
 (  
     @STOK_KODU VARCHAR(50),  
@@ -155,96 +116,241 @@ BEGIN
 
     ;WITH FORECAST AS  
     (  
-        SELECT t.STOK_KODU, v.AyNumarasi,
-        v.Miktar
-        FROM TBLSIP12TMP t
-        CROSS APPLY (VALUES
-            (1,t.MIKTAR_1),(2,t.MIKTAR_2),(3,t.MIKTAR_3),
-            (4,t.MIKTAR_4),(5,t.MIKTAR_5),(6,t.MIKTAR_6),
-            (7,t.MIKTAR_7),(8,t.MIKTAR_8),(9,t.MIKTAR_9),
-            (10,t.MIKTAR_10),(11,t.MIKTAR_11),(12,t.MIKTAR_12)
-        ) v(AyNumarasi,Miktar)
-        WHERE t.STOK_KODU = @STOK_KODU
-    )
-    SELECT @FORECAST_MIKTAR = SUM(Miktar)
-    FROM FORECAST
-    WHERE AyNumarasi = @AY;
+        SELECT   
+            t.STOK_KODU,  
+            v.AyNumarasi,  
+            CASE   
+                WHEN v.AyNumarasi < MONTH(GETDATE())   
+                    THEN YEAR(GETDATE()) + 1  
+                ELSE YEAR(GETDATE())  
+            END AS YIL,  
+            v.Miktar  
+        FROM TBLSIP12TMP t  
+        CROSS APPLY  
+        (  
+            VALUES  
+                (1 , t.MIKTAR_1),  
+                (2 , t.MIKTAR_2),  
+                (3 , t.MIKTAR_3),  
+                (4 , t.MIKTAR_4),  
+                (5 , t.MIKTAR_5),  
+                (6 , t.MIKTAR_6),  
+                (7 , t.MIKTAR_7),  
+                (8 , t.MIKTAR_8),  
+                (9 , t.MIKTAR_9),  
+                (10, t.MIKTAR_10),  
+                (11, t.MIKTAR_11),  
+                (12, t.MIKTAR_12)  
+        ) v(AyNumarasi, Miktar)  
+        WHERE t.STOK_KODU = @STOK_KODU  
+    )  
+    SELECT   
+        @FORECAST_MIKTAR = ISNULL(SUM(Miktar),0)  
+    FROM FORECAST  
+    WHERE AyNumarasi = @AY  
+    AND YIL = @YIL  
 
-    IF (@FORECAST_MIKTAR < @MIKTAR)
-        SET @SONUC = 1;
+    SELECT   
+        @SIP_BAKIYE = ISNULL(SUM(A.STHAR_GCMIK - A.FIRMA_DOVTUT),0)  
+    FROM TBLSIPATRA A WITH(NOLOCK)  
+    WHERE   
+        A.STOK_KODU = @STOK_KODU  
+        AND A.STHAR_FTIRSIP = '6'  
+        AND A.STHAR_HTUR = 'H'  
+        AND MONTH(A.D_YEDEK10) = @AY  
+        AND YEAR(A.D_YEDEK10) = @YIL  
+        AND (A.STHAR_GCMIK - A.FIRMA_DOVTUT) > 0  
 
-    RETURN @SONUC;
+    IF (@SIP_BAKIYE + @MIKTAR) > @FORECAST_MIKTAR  
+        RETURN 1  
+
+    RETURN 0  
 
 END
-</pre>
+</div>
 </div>
 
-<!-- INVENTORY -->
+<!-- 2 MRP -->
+<div class="card">
+<div class="tag">MRP</div>
+<h3>MRP Lead Time Analysis</h3>
+
+<div class="sql">
+SELECT 
+    t.STOK_KODU,
+    t.TARIH AS ihtiyac_tarihi,
+    t.TESTAR AS teslim_tarihi,
+    t.HABERTAR AS bildirim_tarihi,
+    t.SIPTAR AS siparis_tarihi,
+
+    DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
+    DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark,
+    DATEDIFF(DAY, t.HABERTAR, t.TESTAR) AS bildirim_teslim_fark,
+
+    s.TEMIN_SURESI,
+    c.NAKLIYE_SURESI
+
+FROM TBLMRPSIP t
+
+LEFT JOIN TBLSTSABIT s 
+    ON s.STOK_KODU = t.STOK_KODU
+   AND s.SUBE_KODU = t.ISLETME_KODU
+
+LEFT JOIN TBLCARISTOK c 
+    ON c.CARI_KOD = t.SATICI_KODU
+
+WHERE t.STOK_KODU LIKE 'LF024013000403%'
+
+ORDER BY t.TARIH
+</div>
+</div>
+
+<!-- 3 STOCK MOVEMENT -->
 <div class="card">
 <div class="tag">INVENTORY</div>
-<h3>Stock Movement</h3>
-<p>Depo giriş / çıkış net stok hesaplama</p>
+<h3>Stock Movement Analysis</h3>
 
-<button class="btn" onclick="openModal('sql2')">View Full SQL</button>
-
-<pre id="sql2" style="display:none">
+<div class="sql">
 SELECT
     STOK_KODU,
     DEPO_KODU,
-    SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS,
-    SUM(CASE WHEN STHAR_GCKOD = 'C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS,
-    SUM(CASE 
-        WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK 
-        WHEN STHAR_GCKOD = 'C' THEN -STHAR_GCMIK 
-        ELSE 0 END) AS NET
+
+    SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS_MIKTAR,
+    SUM(CASE WHEN STHAR_GCKOD = 'C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS_MIKTAR,
+
+    SUM(
+        CASE 
+            WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK 
+            WHEN STHAR_GCKOD = 'C' THEN -STHAR_GCMIK 
+            ELSE 0 
+        END
+    ) AS NET_MIKTAR
+
 FROM TBLSTHAR
+
+WHERE STOK_KODU = 'LF022602088026-Y'
+  AND DEPO_KODU = '101'
+
 GROUP BY STOK_KODU, DEPO_KODU;
-</pre>
+</div>
 </div>
 
-<!-- MRP -->
+<!-- 4 INVOICE -->
 <div class="card">
-<div class="tag">MRP</div>
-<h3>Lead Time Analysis</h3>
-<p>Üretim / teslim süre analizi</p>
+<div class="tag">FINANCE</div>
+<h3>Invoice Stock Analysis</h3>
 
-<button class="btn" onclick="openModal('sql3')">View Full SQL</button>
+<div class="sql">
+SELECT
+F.SUBE_KODU,
+F.TARIH,
+F.FATIRS_NO AS BELGE_NO,
+F.CARI_KODU,
 
-<pre id="sql3" style="display:none">
-SELECT 
-    STOK_KODU,
-    DATEDIFF(DAY,SIPTAR,TARIH) AS FARK
-FROM TBLMRPSIP;
-</pre>
+CASE 
+WHEN F.FTIRSIP = '1' THEN 'SATIS FATURASI'
+WHEN F.FTIRSIP = '2' THEN 'ALIS FATURASI'
+WHEN F.FTIRSIP = '3' THEN 'SATIS IRSALIYE'
+WHEN F.FTIRSIP = '4' THEN 'ALIS IRSALIYE'
+WHEN F.FTIRSIP IN ('8','9') THEN 'DEPOLAR ARASI TRANSFER'
+END AS BELGE_TIPI,
+
+S.STOK_KODU,
+S.STHAR_GCMIK AS MIKTAR,
+S.STHAR_NF AS BIRIM_FIYAT
+
+FROM TBLSTHAR S WITH(NOLOCK)
+
+LEFT JOIN TBLFATUIRS F WITH(NOLOCK)
+ON F.FATIRS_NO = S.FISNO
+
+WHERE S.STOK_KODU IN (
+'LF040006037551',
+'LF040006039501',
+'LF040135102064',
+'LF043540500600',
+'LF045152022224',
+'LF045790012000',
+'LF288430167',
+'LF288711953',
+'LF288712185',
+'LF288712584',
+'TH630C1_FN',
+'LF024013000082',
+'LF024013000139',
+'LF024013000378',
+'LF030070062016',
+'LF040006037101',
+'LF040006037104',
+'LF040006037161',
+'LF040006037164',
+'LF040006037174',
+'LF040006037511',
+'LF040006037550'
+)
+
+ORDER BY S.STOK_KODU, F.TARIH
+</div>
+</div>
+
+<!-- 5 SERIAL -->
+<div class="card">
+<div class="tag">SERIAL</div>
+<h3>Serial / Non-Serial Stock Merge</h3>
+
+<div class="sql">
+-- SERİSİZ
+SELECT
+    sh.depo_kodu,
+    sh.stok_kodu,
+    sk.stok_adi,
+    NULL AS seri_no,
+    SUM(
+        CASE 
+            WHEN sh.sthar_gckod = 'G' THEN sh.sthar_gcmik
+            WHEN sh.sthar_gckod = 'C' THEN -sh.sthar_gcmik
+            ELSE 0
+        END
+    ) AS miktar
+FROM tblsthar sh
+JOIN TBLSTSABIT sk 
+    ON sk.stok_kodu = sh.stok_kodu
+WHERE sh.depo_kodu = 166
+GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi
+
+UNION ALL
+
+-- SERİLİ
+SELECT
+    ss.depokod,
+    ss.stok_kodu,
+    sk.stok_adi,
+    ss.seri_no,
+
+    SUM(
+        CASE 
+            WHEN ss.gckod = 'G' THEN ss.miktar
+            WHEN ss.gckod = 'C' THEN -ss.miktar
+            ELSE 0
+        END
+    ) AS miktar
+
+FROM tblseritra ss
+
+JOIN TBLSTSABIT sk 
+    ON sk.stok_kodu = ss.stok_kodu
+
+WHERE ss.depokod = 166
+
+GROUP BY 
+    ss.depokod,
+    ss.stok_kodu,
+    sk.stok_adi,
+    ss.seri_no
+</div>
 </div>
 
 </div>
-
-<!-- MODAL -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✖</span>
-    <pre id="modalText"></pre>
-  </div>
-</div>
-
-<script>
-function openModal(id){
-  document.getElementById("modalText").innerText =
-  document.getElementById(id).innerText;
-  document.getElementById("modal").style.display="block";
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-}
-
-window.onclick = function(e){
-  if(e.target == document.getElementById("modal")){
-    closeModal();
-  }
-}
-</script>
 
 </body>
 </html>
