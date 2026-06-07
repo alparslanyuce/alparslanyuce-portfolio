@@ -52,29 +52,28 @@ header a{
 .tag{
   color:#60a5fa;
   font-size:12px;
-  letter-spacing:1px;
 }
 
+/* TITLE */
 h3{
   color:#93c5fd;
   margin:10px 0;
 }
 
-/* CASE TEXT */
+/* CASE */
 .case{
   background:#0f172a;
   padding:12px;
   border-radius:10px;
-  margin:10px 0;
   font-size:13px;
   color:#cbd5e1;
   border:1px solid #1f2937;
+  margin-bottom:10px;
 }
 
 /* BUTTON */
 .btn{
   display:inline-block;
-  margin-top:10px;
   padding:8px 12px;
   background:#3b82f6;
   color:white;
@@ -121,7 +120,6 @@ pre{
   color:#e5e7eb;
 }
 </style>
-
 </head>
 
 <body>
@@ -136,14 +134,14 @@ pre{
 
 <div class="grid">
 
-<!-- 1 -->
+<!-- 1 FORECAST FUNCTION -->
 <div class="card">
-<div class="tag">ERP FORECAST FUNCTION</div>
-<h3>Stock Forecast Control</h3>
+<div class="tag">ERP FUNCTION</div>
+<h3>Stock Forecast Function</h3>
 
 <div class="case">
 <b>Problem:</b> Stok tahmini hatalı sipariş riskine yol açıyor.<br><br>
-<b>Solution:</b> Forecast function ile aylık planlama kontrolü.<br><br>
+<b>Solution:</b> Forecast function ile aylık planlama kontrolü yapıldı.<br><br>
 <b>Impact:</b> Fazla sipariş ve stok maliyeti azaltıldı.
 </div>
 
@@ -215,15 +213,15 @@ END
 </pre>
 </div>
 
-<!-- 2 -->
+<!-- 2 MRP -->
 <div class="card">
 <div class="tag">MRP ANALYSIS</div>
-<h3>Lead Time & Supply Tracking</h3>
+<h3>Lead Time Analysis</h3>
 
 <div class="case">
-<b>Problem:</b> Üretim ve teslim süreleri net takip edilemiyor.<br><br>
-<b>Solution:</b> Sipariş, teslim ve bildirim tarihleri karşılaştırıldı.<br><br>
-<b>Impact:</b> Tedarik süreci görünür hale getirildi.
+<b>Problem:</b> Sipariş ve teslim süreçleri net takip edilemiyor.<br><br>
+<b>Solution:</b> Tarihler karşılaştırılarak gecikme analizi yapıldı.<br><br>
+<b>Impact:</b> Tedarik görünürlüğü artırıldı.
 </div>
 
 <div class="btn" onclick="openModal('sql2')">Show Full SQL</div>
@@ -231,10 +229,10 @@ END
 <pre id="sql2">
 SELECT 
     t.STOK_KODU,
-    t.TARIH AS ihtiyac_tarihi,
-    t.TESTAR AS teslim_tarihi,
-    t.HABERTAR AS bildirim_tarihi,
-    t.SIPTAR AS siparis_tarihi,
+    t.TARIH,
+    t.TESTAR,
+    t.HABERTAR,
+    t.SIPTAR,
 
     DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
     DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark,
@@ -249,14 +247,14 @@ LEFT JOIN TBLCARISTOK c ON c.CARI_KOD = t.SATICI_KODU;
 </pre>
 </div>
 
-<!-- 3 -->
+<!-- 3 STOCK -->
 <div class="card">
 <div class="tag">INVENTORY CONTROL</div>
 <h3>Stock Movement Analysis</h3>
 
 <div class="case">
-<b>Problem:</b> Depo giriş çıkışları net takip edilemiyor.<br><br>
-<b>Solution:</b> Giriş / çıkış hareketleri net stok olarak hesaplandı.<br><br>
+<b>Problem:</b> Depo giriş/çıkış net görünmüyor.<br><br>
+<b>Solution:</b> Giriş/çıkış net stok hesaplandı.<br><br>
 <b>Impact:</b> Gerçek stok görünürlüğü sağlandı.
 </div>
 
@@ -266,10 +264,8 @@ LEFT JOIN TBLCARISTOK c ON c.CARI_KOD = t.SATICI_KODU;
 SELECT
     STOK_KODU,
     DEPO_KODU,
-
     SUM(CASE WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS_MIKTAR,
     SUM(CASE WHEN STHAR_GCKOD = 'C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS_MIKTAR,
-
     SUM(
         CASE 
             WHEN STHAR_GCKOD = 'G' THEN STHAR_GCMIK 
@@ -277,9 +273,97 @@ SELECT
             ELSE 0 
         END
     ) AS NET_MIKTAR
-
 FROM TBLSTHAR
 GROUP BY STOK_KODU, DEPO_KODU;
+</pre>
+</div>
+
+<!-- 4 INVOICE -->
+<div class="card">
+<div class="tag">INVOICE TRACKING</div>
+<h3>Stock Invoice Analysis</h3>
+
+<div class="case">
+<b>Problem:</b> Fatura bazlı stok hareketleri takip edilemiyor.<br><br>
+<b>Solution:</b> Stok ve fatura tabloları birleştirildi.<br><br>
+<b>Impact:</b> Finansal stok analizi sağlandı.
+</div>
+
+<div class="btn" onclick="openModal('sql4')">Show Full SQL</div>
+
+<pre id="sql4">
+SELECT
+F.SUBE_KODU,
+F.TARIH,
+F.FATIRS_NO AS BELGE_NO,
+F.CARI_KODU,
+
+CASE 
+WHEN F.FTIRSIP = '1' THEN 'SATIS FATURASI'
+WHEN F.FTIRSIP = '2' THEN 'ALIS FATURASI'
+WHEN F.FTIRSIP = '3' THEN 'SATIS IRSALIYE'
+WHEN F.FTIRSIP = '4' THEN 'ALIS IRSALIYE'
+WHEN F.FTIRSIP IN ('8','9') THEN 'DEPOLAR ARASI TRANSFER'
+END AS BELGE_TIPI,
+
+S.STOK_KODU,
+S.STHAR_GCMIK,
+S.STHAR_NF
+
+FROM TBLSTHAR S
+LEFT JOIN TBLFATUIRS F ON F.FATIRS_NO = S.FISNO;
+</pre>
+</div>
+
+<!-- 5 SERI -->
+<div class="card">
+<div class="tag">SERIAL STOCK</div>
+<h3>Serial / Non-Serial Merge</h3>
+
+<div class="case">
+<b>Problem:</b> Serili ve serisiz stoklar ayrı takip ediliyor.<br><br>
+<b>Solution:</b> UNION ALL ile birleşik stok görünümü oluşturuldu.<br><br>
+<b>Impact:</b> Depo yönetimi kolaylaştırıldı.
+</div>
+
+<div class="btn" onclick="openModal('sql5')">Show Full SQL</div>
+
+<pre id="sql5">
+-- SERİSİZ
+SELECT
+    sh.depo_kodu,
+    sh.stok_kodu,
+    sk.stok_adi,
+    NULL AS seri_no,
+    SUM(
+        CASE 
+            WHEN sh.sthar_gckod = 'G' THEN sh.sthar_gcmik
+            WHEN sh.sthar_gckod = 'C' THEN -sh.sthar_gcmik
+            ELSE 0
+        END
+    ) AS miktar
+FROM tblsthar sh
+JOIN TBLSTSABIT sk ON sk.stok_kodu = sh.stok_kodu
+GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi
+
+UNION ALL
+
+-- SERİLİ
+SELECT
+    ss.depokod,
+    ss.stok_kodu,
+    sk.stok_adi,
+    ss.seri_no,
+    SUM(
+        CASE 
+            WHEN ss.gckod = 'G' THEN ss.miktar
+            WHEN ss.gckod = 'C' THEN -ss.miktar
+            ELSE 0
+        END
+    ) AS miktar
+FROM tblseritra ss
+JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu
+GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no;
 </pre>
 </div>
 
@@ -297,7 +381,6 @@ GROUP BY STOK_KODU, DEPO_KODU;
 function openModal(id){
   document.getElementById("modalText").innerText =
   document.getElementById(id).innerText;
-
   document.getElementById("modal").style.display="block";
 }
 
