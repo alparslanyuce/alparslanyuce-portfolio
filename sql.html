@@ -1,271 +1,209 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>SQL Portfolio | ERP Data Specialist</title>
+<meta charset="UTF-8">
+<title>SQL Portfolio | ERP Data Specialist</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<style>
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI;
+}
 
-    body {
-      background: #0b1220;
-      color: #e5e7eb;
-    }
+body {
+  background:#0b1220;
+  color:#e5e7eb;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 60px;
-      background: #0f172a;
-      border-bottom: 1px solid #1f2937;
-    }
+header {
+  display:flex;
+  justify-content:space-between;
+  padding:20px 60px;
+  background:#0f172a;
+  border-bottom:1px solid #1f2937;
+}
 
-    nav a {
-      color: #e5e7eb;
-      text-decoration: none;
-      margin-left: 15px;
-    }
+header a {
+  color:#e5e7eb;
+  text-decoration:none;
+  margin-left:15px;
+}
 
-    .hero {
-      text-align: center;
-      padding: 60px 20px;
-    }
+.hero {
+  text-align:center;
+  padding:50px;
+}
 
-    .hero h1 {
-      font-size: 38px;
-    }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+  padding:40px;
+}
 
-    /* FILTER BUTTONS */
-    .filters {
-      text-align: center;
-      margin: 20px 0;
-    }
+.card {
+  background:#111827;
+  padding:20px;
+  border-radius:12px;
+  border:1px solid #1f2937;
+}
 
-    .filters button {
-      margin: 5px;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #1f2937;
-      color: white;
-    }
+.card h3 {
+  color:#93c5fd;
+  margin-bottom:10px;
+}
 
-    .filters button:hover {
-      background: #3b82f6;
-    }
+.card p {
+  color:#cbd5e1;
+  margin-bottom:10px;
+}
 
-    /* GRID */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 40px;
-    }
+.sql {
+  background:#0f172a;
+  padding:12px;
+  border-radius:10px;
+  overflow-x:auto;
+  white-space:pre;
+  border:1px solid #1f2937;
+  font-size:12px;
+}
 
-    .card {
-      background: #111827;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #1f2937;
-    }
+.tag {
+  font-size:12px;
+  color:#60a5fa;
+  margin-bottom:8px;
+  display:block;
+}
 
-    .card h3 {
-      color: #93c5fd;
-      margin-bottom: 10px;
-    }
+footer {
+  text-align:center;
+  padding:30px;
+  border-top:1px solid #1f2937;
+  margin-top:40px;
+  color:#9ca3af;
+}
+</style>
 
-    .card p {
-      color: #cbd5e1;
-      margin-bottom: 10px;
-    }
-
-    .tag {
-      font-size: 12px;
-      color: #60a5fa;
-      margin-bottom: 10px;
-      display: inline-block;
-    }
-
-    .toggle-btn {
-      padding: 8px 12px;
-      background: #3b82f6;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .sql-block {
-      display: none;
-      margin-top: 15px;
-      background: #0f172a;
-      padding: 12px;
-      border-radius: 10px;
-      overflow-x: auto;
-      white-space: pre;
-      border: 1px solid #1f2937;
-      font-size: 13px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      margin-top: 40px;
-      border-top: 1px solid #1f2937;
-      color: #9ca3af;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
 </head>
 
 <body>
 
 <header>
-  <div><b>Alparslan Yüce</b></div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="sql.html">SQL</a>
-  </nav>
+<div><b>Alparslan Yüce</b></div>
+<nav>
+<a href="index.html">Home</a>
+<a href="cv.html">CV</a>
+</nav>
 </header>
 
-<section class="hero">
-  <h1>ERP SQL Portfolio</h1>
-  <p>Supply Chain • Inventory • Forecast • Production • BOM Analysis</p>
-</section>
-
-<!-- FILTERS -->
-<div class="filters">
-  <button onclick="filter('all')">All</button>
-  <button onclick="filter('forecast')">Forecast</button>
-  <button onclick="filter('inventory')">Inventory</button>
-  <button onclick="filter('mrp')">MRP</button>
-  <button onclick="filter('bom')">BOM</button>
-  <button onclick="filter('finance')">Finance</button>
+<div class="hero">
+<h1>SQL / ERP Portfolio</h1>
+<p>Real ERP Queries • Production • Inventory • Forecast • Supply Chain</p>
 </div>
 
-<section class="grid">
+<div class="grid">
 
-<!-- FORECAST -->
-<div class="card forecast">
-  <span class="tag">FORECAST</span>
-  <h3>Demand Forecast Function</h3>
-  <p>ERP monthly forecast vs order validation logic</p>
+<!-- FORECAST FUNCTION -->
+<div class="card">
+<span class="tag">FORECAST</span>
+<h3>Demand Forecast Function</h3>
+<p>ERP aylık tahmin ve sipariş karşılaştırma fonksiyonu</p>
 
-  <button class="toggle-btn" onclick="toggleSQL(this)">Show Full SQL</button>
+<div class="sql">
+CREATE FUNCTION dbo.EBFNC_SIPFORECAST1  
+(  
+    @STOK_KODU VARCHAR(50),  
+    @TARIH DATE,  
+    @MIKTAR DECIMAL(18,2)  
+)  
+RETURNS INT  
+AS  
+BEGIN  
 
-  <pre class="sql-block">
-CREATE FUNCTION dbo.EBFNC_SIPFORECAST1
-(
-    @STOK_KODU VARCHAR(50),
-    @TARIH DATE,
-    @MIKTAR DECIMAL(18,2)
-)
-RETURNS INT
-AS
-BEGIN
-...
-  </pre>
+    DECLARE @SONUC INT = 0  
+    DECLARE @AY INT  
+    DECLARE @YIL INT  
+
+    DECLARE @FORECAST_MIKTAR DECIMAL(18,2) = 0  
+    DECLARE @SIP_BAKIYE DECIMAL(18,2) = 0  
+
+    SET @AY = MONTH(@TARIH)  
+    SET @YIL = YEAR(@TARIH)  
+
+    ;WITH FORECAST AS  
+    (  
+        SELECT t.STOK_KODU, v.AyNumarasi,
+        v.Miktar
+        FROM TBLSIP12TMP t
+        CROSS APPLY (VALUES
+            (1,t.MIKTAR_1),(2,t.MIKTAR_2),(3,t.MIKTAR_3),
+            (4,t.MIKTAR_4),(5,t.MIKTAR_5),(6,t.MIKTAR_6),
+            (7,t.MIKTAR_7),(8,t.MIKTAR_8),(9,t.MIKTAR_9),
+            (10,t.MIKTAR_10),(11,t.MIKTAR_11),(12,t.MIKTAR_12)
+        ) v(AyNumarasi,Miktar)
+        WHERE t.STOK_KODU = @STOK_KODU
+    )
+    SELECT @FORECAST_MIKTAR = SUM(Miktar)
+    FROM FORECAST
+    WHERE AyNumarasi = @AY;
+
+    IF (@FORECAST_MIKTAR < @MIKTAR)
+        SET @SONUC = 1;
+
+    RETURN @SONUC;
+
+END
 </div>
-
-<!-- MRP -->
-<div class="card mrp">
-  <span class="tag">MRP</span>
-  <h3>Lead Time Analysis</h3>
-  <p>Supply chain timing and production planning</p>
-
-  <button class="toggle-btn" onclick="toggleSQL(this)">Show Full SQL</button>
-
-  <pre class="sql-block">
-SELECT STOK_KODU, TARIH,
-DATEDIFF(DAY, SIPTAR, TARIH) AS FARK
-FROM TBLMRPSIP
-  </pre>
 </div>
 
 <!-- INVENTORY -->
-<div class="card inventory">
-  <span class="tag">INVENTORY</span>
-  <h3>Stock Movement Analysis</h3>
-  <p>Warehouse in/out and net stock calculation</p>
+<div class="card">
+<span class="tag">INVENTORY</span>
+<h3>Stock Movement Analysis</h3>
+<p>Depo giriş/çıkış ve net stok hesaplama</p>
 
-  <button class="toggle-btn" onclick="toggleSQL(this)">Show Full SQL</button>
-
-  <pre class="sql-block">
-SELECT STOK_KODU,
-SUM(CASE WHEN GCKOD='G' THEN MIKTAR ELSE -MIKTAR END) AS NET
+<div class="sql">
+SELECT
+STOK_KODU,
+DEPO_KODU,
+SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE -STHAR_GCMIK END) AS NET
 FROM TBLSTHAR
-GROUP BY STOK_KODU
-  </pre>
+GROUP BY STOK_KODU, DEPO_KODU;
+</div>
 </div>
 
-<!-- FINANCE -->
-<div class="card finance">
-  <span class="tag">FINANCE</span>
-  <h3>Invoice Tracking</h3>
-  <p>Stock and invoice transaction mapping</p>
+<!-- MRP -->
+<div class="card">
+<span class="tag">MRP</span>
+<h3>Lead Time Analysis</h3>
 
-  <button class="toggle-btn" onclick="toggleSQL(this)">Show Full SQL</button>
-
-  <pre class="sql-block">
-SELECT F.TARIH, S.STOK_KODU, F.FATIRS_NO
-FROM TBLFATUIRS F
-JOIN TBLSTHAR S ON F.FATIRS_NO = S.FISNO
-  </pre>
+<div class="sql">
+SELECT
+STOK_KODU,
+DATEDIFF(DAY,SIPTAR,TARIH) AS FARK
+FROM TBLMRPSIP;
+</div>
 </div>
 
-<!-- BOM -->
-<div class="card bom">
-  <span class="tag">BOM</span>
-  <h3>Material Dependency (BOM)</h3>
-  <p>Product tree and usage dependency analysis</p>
+<!-- SERIAL -->
+<div class="card">
+<span class="tag">INVENTORY</span>
+<h3>Serial / Non-Serial Stock</h3>
 
-  <button class="toggle-btn" onclick="toggleSQL(this)">Show Full SQL</button>
-
-  <pre class="sql-block">
-SELECT HAM_KODU
-FROM TBLSTOKURM
-WHERE EXISTS (...)
-  </pre>
+<div class="sql">
+SELECT * FROM TBLSTHAR
+UNION ALL
+SELECT * FROM TBLSERITRA;
+</div>
 </div>
 
-</section>
+</div>
 
 <footer>
-  © 2026 ERP Data Specialist | Alparslan Yüce
+© 2026 ERP Data Specialist | Alparslan Yüce
 </footer>
-
-<script>
-function toggleSQL(btn) {
-  const block = btn.nextElementSibling;
-  block.style.display = block.style.display === "block" ? "none" : "block";
-}
-
-/* FILTER SYSTEM */
-function filter(type) {
-  const cards = document.querySelectorAll('.card');
-
-  cards.forEach(card => {
-    if (type === 'all') {
-      card.classList.remove('hidden');
-    } else {
-      if (card.classList.contains(type)) {
-        card.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
-      }
-    }
-  });
-}
-</script>
 
 </body>
 </html>
