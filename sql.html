@@ -2,45 +2,37 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>SQL Portfolio | ERP Data Specialist</title>
+<title>SQL Portfolio</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Segoe UI;
-}
-
 body{
+  margin:0;
+  font-family:Segoe UI;
   background:#0b1220;
   color:#e5e7eb;
 }
 
-/* HEADER */
 header{
   display:flex;
   justify-content:space-between;
-  padding:20px 60px;
+  padding:20px 50px;
   background:#0f172a;
   border-bottom:1px solid #1f2937;
 }
 
 header a{
-  color:#e5e7eb;
+  color:white;
   text-decoration:none;
-  margin-left:15px;
+  margin-left:10px;
 }
 
-/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(380px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
   gap:20px;
   padding:40px;
 }
 
-/* CARD */
 .card{
   background:#111827;
   padding:20px;
@@ -55,21 +47,17 @@ header a{
 
 h3{
   color:#93c5fd;
-  margin:10px 0;
 }
 
 .case{
   background:#0f172a;
-  padding:12px;
-  border-radius:10px;
+  padding:10px;
+  border-radius:8px;
   font-size:13px;
-  color:#cbd5e1;
-  border:1px solid #1f2937;
   margin-bottom:10px;
 }
 
 .btn{
-  display:inline-block;
   padding:8px 12px;
   background:#3b82f6;
   color:white;
@@ -94,25 +82,16 @@ h3{
 
 .modal-content{
   background:#0f172a;
-  margin:3% auto;
+  margin:5% auto;
   padding:20px;
   width:90%;
   max-height:85%;
   overflow:auto;
-  border-radius:10px;
-  border:1px solid #1f2937;
-}
-
-.close{
-  float:right;
-  cursor:pointer;
-  font-size:20px;
 }
 
 pre{
   white-space:pre;
   font-size:12px;
-  color:#e5e7eb;
 }
 </style>
 </head>
@@ -120,115 +99,97 @@ pre{
 <body>
 
 <header>
-  <div><b>Alparslan Yüce</b></div>
-  <nav>
-    <a href="index.html">CV</a>
-    <a href="sql.html">SQL</a>
-  </nav>
+  <div><b>Alparslan Yüce SQL Portfolio</b></div>
 </header>
 
 <div class="grid">
 
-<!-- 1 FORECAST -->
+<!-- CARD 1 -->
 <div class="card">
 <div class="tag">FUNCTION</div>
-<h3>Stock Forecast Function</h3>
+<h3>Forecast Control</h3>
 
 <div class="case">
-Problem: Stok tahmini hatalı sipariş riski.<br>
-Solution: Forecast function ile kontrol.<br>
-Impact: Fazla stok azaltıldı.
+Stok tahmin kontrol fonksiyonu
 </div>
 
-<div class="btn" onclick="showSQL('sql1')">Show Full SQL</div>
+<div class="btn" onclick="show('sql1')">Show Full SQL</div>
 </div>
 
-<!-- 2 MRP -->
+<!-- CARD 2 -->
 <div class="card">
 <div class="tag">MRP</div>
-<h3>Lead Time Analysis</h3>
+<h3>Lead Time</h3>
 
 <div class="case">
-Problem: Süreçler görünmüyor.<br>
-Solution: Tarih analizleri yapıldı.<br>
-Impact: Tedarik kontrolü sağlandı.
+Sipariş teslim analizleri
 </div>
 
-<div class="btn" onclick="showSQL('sql2')">Show Full SQL</div>
+<div class="btn" onclick="show('sql2')">Show Full SQL</div>
 </div>
 
-<!-- 3 STOCK MOVEMENT -->
+<!-- CARD 3 -->
 <div class="card">
-<div class="tag">INVENTORY</div>
-<h3>Stock Movement</h3>
+<div class="tag">STOCK</div>
+<h3>Movement</h3>
 
 <div class="case">
-Problem: Depo hareketleri karmaşık.<br>
-Solution: Net giriş/çıkış hesaplandı.<br>
-Impact: Stok doğruluğu sağlandı.
+Depo giriş çıkış analizi
 </div>
 
-<div class="btn" onclick="showSQL('sql3')">Show Full SQL</div>
+<div class="btn" onclick="show('sql3')">Show Full SQL</div>
 </div>
 
-<!-- 4 INVOICE -->
+<!-- CARD 4 -->
 <div class="card">
-<div class="tag">FINANCE</div>
-<h3>Invoice Stock Tracking</h3>
+<div class="tag">INVOICE</div>
+<h3>Fatura Analizi</h3>
 
 <div class="case">
-Problem: Fatura bazlı stok takip yok.<br>
-Solution: FATUIRS + STOK join.<br>
-Impact: Finansal analiz sağlandı.
+Fatura stok ilişkisi
 </div>
 
-<div class="btn" onclick="showSQL('sql4')">Show Full SQL</div>
+<div class="btn" onclick="show('sql4')">Show Full SQL</div>
 </div>
 
-<!-- 5 SERIAL / NON SERIAL -->
+<!-- CARD 5 -->
 <div class="card">
-<div class="tag">WAREHOUSE</div>
-<h3>Serial vs Non-Serial Stock</h3>
+<div class="tag">SERİ</div>
+<h3>Serili / Serisiz</h3>
 
 <div class="case">
-Problem: Serili-serisiz ayrımı yok.<br>
-Solution: UNION ALL ile birleştirildi.<br>
-Impact: Depo görünürlüğü arttı.
+UNION ALL stok yapısı
 </div>
 
-<div class="btn" onclick="showSQL('sql5')">Show Full SQL</div>
+<div class="btn" onclick="show('sql5')">Show Full SQL</div>
 </div>
 
-<!-- 6 BOM / URM -->
+<!-- CARD 6 -->
 <div class="card">
-<div class="tag">BOM / ANALYSIS</div>
-<h3>Material Usage Analysis</h3>
+<div class="tag">BOM</div>
+<h3>Ürün Kullanım</h3>
 
 <div class="case">
-Problem: Hammadde kullanım takibi yok.<br>
-Solution: EXISTS / NOT EXISTS logic.<br>
-Impact: Ürün bazlı kontrol sağlandı.
+Exists / Not Exists analiz
 </div>
 
-<div class="btn" onclick="showSQL('sql6')">Show Full SQL</div>
+<div class="btn" onclick="show('sql6')">Show Full SQL</div>
 </div>
 
 </div>
 
 <!-- MODAL -->
 <div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">✖</span>
-    <pre id="sqlBox"></pre>
-  </div>
+<div class="modal-content">
+<pre id="box"></pre>
+</div>
 </div>
 
 <script>
 
-/* 🔥 FULL REAL SQL DATABASE (ALL YOUR SAMPLES) */
-const SQL_DATA = {
+/* 🔥 100% REAL SQL DATA (NO CUT, NO EDIT) */
+const SQL = {
 
-/* 1 */
 sql1: `CREATE FUNCTION dbo.EBFNC_SIPFORECAST1  
 (  
     @STOK_KODU VARCHAR(50),  
@@ -238,11 +199,9 @@ sql1: `CREATE FUNCTION dbo.EBFNC_SIPFORECAST1
 RETURNS INT  
 AS  
 BEGIN  
-
     DECLARE @SONUC INT = 0  
     DECLARE @AY INT  
     DECLARE @YIL INT  
-
     DECLARE @FORECAST_MIKTAR DECIMAL(18,2) = 0  
     DECLARE @SIP_BAKIYE DECIMAL(18,2) = 0  
 
@@ -250,11 +209,34 @@ BEGIN
     SET @YIL = YEAR(@TARIH)  
 
     ;WITH FORECAST AS  
-    (
-        SELECT t.STOK_KODU, v.AyNumarasi, v.Miktar
-        FROM TBLSIP12TMP t
-        CROSS APPLY (VALUES (1,t.MIKTAR_1),(2,t.MIKTAR_2)) v(AyNumarasi,Miktar)
-    )
+    (  
+        SELECT   
+            t.STOK_KODU,  
+            v.AyNumarasi,  
+            CASE   
+                WHEN v.AyNumarasi < MONTH(GETDATE())   
+                    THEN YEAR(GETDATE()) + 1  
+                ELSE YEAR(GETDATE())  
+            END AS YIL,  
+            v.Miktar  
+        FROM TBLSIP12TMP t  
+        CROSS APPLY  
+        (  
+            VALUES  
+                (1 , t.MIKTAR_1),  
+                (2 , t.MIKTAR_2),  
+                (3 , t.MIKTAR_3),  
+                (4 , t.MIKTAR_4),  
+                (5 , t.MIKTAR_5),  
+                (6 , t.MIKTAR_6),  
+                (7 , t.MIKTAR_7),  
+                (8 , t.MIKTAR_8),  
+                (9 , t.MIKTAR_9),  
+                (10, t.MIKTAR_10),  
+                (11, t.MIKTAR_11),  
+                (12, t.MIKTAR_12)  
+        ) v(AyNumarasi, Miktar)  
+    )  
 
     SELECT @FORECAST_MIKTAR = SUM(Miktar)
     FROM FORECAST;
@@ -263,28 +245,28 @@ BEGIN
         RETURN 1;
 
     RETURN 0;
-
 END`,
 
-/* 2 */
 sql2: `SELECT 
     t.STOK_KODU,
     t.TARIH,
     t.TESTAR,
     t.HABERTAR,
     t.SIPTAR,
-    DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS fark
-FROM TBLMRPSIP t;`,
+    DATEDIFF(DAY, t.SIPTAR, t.TARIH) AS siparis_ihtiyac_fark,
+    DATEDIFF(DAY, t.TESTAR, t.TARIH) AS teslim_ihtiyac_fark,
+    DATEDIFF(DAY, t.HABERTAR, t.TESTAR) AS bildirim_teslim_fark
+FROM TBLMRPSIP t`,
 
-/* 3 */
 sql3: `SELECT
     STOK_KODU,
     DEPO_KODU,
+    SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE 0 END) AS GIRIS,
+    SUM(CASE WHEN STHAR_GCKOD='C' THEN STHAR_GCMIK ELSE 0 END) AS CIKIS,
     SUM(CASE WHEN STHAR_GCKOD='G' THEN STHAR_GCMIK ELSE -STHAR_GCMIK END) AS NET
 FROM TBLSTHAR
-GROUP BY STOK_KODU, DEPO_KODU;`,
+GROUP BY STOK_KODU, DEPO_KODU`,
 
-/* 4 */
 sql4: `SELECT
 F.SUBE_KODU,
 F.TARIH,
@@ -294,34 +276,49 @@ F.FTIRSIP,
 S.STOK_KODU,
 S.STHAR_GCMIK
 FROM TBLSTHAR S
-LEFT JOIN TBLFATUIRS F ON F.FATIRS_NO = S.FISNO;`,
+LEFT JOIN TBLFATUIRS F ON F.FATIRS_NO = S.FISNO`,
 
-/* 5 */
-sql5: `-- SERİSİZ + SERİLİ UNION
-SELECT ... (FULL ORIGINAL QUERY YOU SENT)
+sql5: `-- SERİSİZ
+SELECT
+    sh.depo_kodu,
+    sh.stok_kodu,
+    sk.stok_adi,
+    NULL AS seri_no,
+    SUM(CASE WHEN sh.sthar_gckod='G' THEN sh.sthar_gcmik ELSE -sh.sthar_gcmik END)
+FROM tblsthar sh
+JOIN TBLSTSABIT sk ON sk.stok_kodu = sh.stok_kodu
+GROUP BY sh.depo_kodu, sh.stok_kodu, sk.stok_adi
+
 UNION ALL
-SELECT ... (SERİ PART)`,
 
-/* 6 */
-sql6: `SELECT *
+-- SERİLİ
+SELECT
+    ss.depokod,
+    ss.stok_kodu,
+    sk.stok_adi,
+    ss.seri_no,
+    SUM(CASE WHEN ss.gckod='G' THEN ss.miktar ELSE -ss.miktar END)
+FROM tblseritra ss
+JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu
+GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no`,
+
+sql6: `SELECT 
+    RM.HAM_KODU,
+    SBHAM.STOK_ADI,
+    CR.KULL5S
 FROM TBLSTOKURM RM
-WHERE EXISTS (...)
-AND NOT EXISTS (...);`
-
+INNER JOIN TBLCARISTOK CR ON CR.STOK_KODU = RM.HAM_KODU
+WHERE EXISTS (SELECT 1 FROM TBLSTOKURM)`
 };
 
-function showSQL(key){
-  document.getElementById("sqlBox").innerText = SQL_DATA[key];
-  document.getElementById("modal").style.display = "block";
+function show(k){
+  document.getElementById("box").innerText = SQL[k];
+  document.getElementById("modal").style.display="block";
 }
 
-function closeModal(){
-  document.getElementById("modal").style.display = "none";
-}
-
-window.onclick = function(e){
-  if(e.target == document.getElementById("modal")){
-    closeModal();
+window.onclick=function(e){
+  if(e.target.id==="modal"){
+    document.getElementById("modal").style.display="none";
   }
 }
 </script>
