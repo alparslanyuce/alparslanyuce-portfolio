@@ -110,3 +110,8 @@ pre {
   font-size: 13px;
   border: 1px solid #1f2937;
 }
+
+.card {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
