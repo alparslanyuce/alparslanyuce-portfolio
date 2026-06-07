@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>SQL Portfolio | Alparslan Yüce</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Alparslan Yüce</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="sql.html">SQL</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>SQL / ERP Portfolio</h1>
+  <p>Real ERP Queries • Supply Chain • Inventory • Production Data Models</p>
+</section>
+
+<section class="grid">
+
+<!-- 1 -->
+<div class="card">
+  <h3>📊 Forecast & Demand Analysis</h3>
+  <p><b>TR:</b> ERP sisteminde aylık tahmin ve sipariş karşılaştırma mantığı</p>
+  <p><b>EN:</b> Monthly forecast vs order validation logic in ERP system</p>
+  <pre>
+-- Forecast ERP Business Logic Function
+-- (CROSS APPLY + CTE + Business Rule Validation)
+-- See full function in database layer
+  </pre>
+</div>
+
+<!-- 2 -->
+<div class="card">
+  <h3>🏭 MRP Lead Time Analysis</h3>
+  <p><b>TR:</b> Tedarik, üretim ve teslim sürelerinin analiz edilmesi</p>
+  <p><b>EN:</b> Lead time analysis across supply chain and production stages</p>
+  <pre>
+SELECT 
+    STOK_KODU,
+    TARIH,
+    DATEDIFF(DAY, SIPTAR, TARIH) AS SIPARIS_FARK
+FROM TBLMRPSIP
+  </pre>
+</div>
+
+<!-- 3 -->
+<div class="card">
+  <h3>📦 Inventory Movement (Stock Flow)</h3>
+  <p><b>TR:</b> Depo bazlı giriş-çıkış ve net stok hesaplama</p>
+  <p><b>EN:</b> Warehouse-based inventory inflow/outflow calculation</p>
+  <pre>
+SELECT
+  STOK_KODU,
+  SUM(CASE WHEN GCKOD='G' THEN MIKTAR ELSE -MIKTAR END) AS NET
+FROM TBLSTHAR
+GROUP BY STOK_KODU
+  </pre>
+</div>
+
+<!-- 4 -->
+<div class="card">
+  <h3>🧾 Invoice & Stock Transaction</h3>
+  <p><b>TR:</b> Fatura ve stok hareketlerinin ERP bazlı analizi</p>
+  <p><b>EN:</b> ERP-based invoice and stock transaction tracking</p>
+  <pre>
+SELECT F.TARIH, S.STOK_KODU, F.FATIRS_NO
+FROM TBLFATUIRS F
+JOIN TBLSTHAR S ON F.FATIRS_NO = S.FISNO
+  </pre>
+</div>
+
+<!-- 5 -->
+<div class="card">
+  <h3>🔗 BOM Dependency Analysis</h3>
+  <p><b>TR:</b> Ürün ağacı ve kullanım bağımlılıklarının analizi</p>
+  <p><b>EN:</b> Bill of Materials dependency and usage analysis</p>
+  <pre>
+SELECT HAM_KODU
+FROM TBLSTOKURM
+WHERE EXISTS (
+  SELECT 1 FROM TBLSTOKURM U
+)
+  </pre>
+</div>
+
+<!-- 6 -->
+<div class="card">
+  <h3>📦 Serialized & Non-Serialized Stock</h3>
+  <p><b>TR:</b> Serili ve serisiz stokların birleşik raporu</p>
+  <p><b>EN:</b> Unified report for serialized and non-serialized inventory</p>
+  <pre>
+-- UNION ALL logic
+SELECT ... FROM TBLSTHAR
+UNION ALL
+SELECT ... FROM TBLSERITRA
+  </pre>
+</div>
+
+</section>
+
+<footer>
+  <p>© 2026 Alparslan Yüce | ERP & Data Specialist</p>
+</footer>
+
+</body>
+</html>
