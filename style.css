@@ -100,3 +100,13 @@ footer {
   border-top: 1px solid #1f2937;
   color: #9ca3af;
 }
+
+pre {
+  background: #0f172a;
+  padding: 15px;
+  border-radius: 10px;
+  overflow-x: auto;
+  white-space: pre;
+  font-size: 13px;
+  border: 1px solid #1f2937;
+}
