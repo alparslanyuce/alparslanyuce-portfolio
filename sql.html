@@ -217,6 +217,20 @@ pre{
 <div class="btn" onclick="show('sql7')">Show Full SQL</div>
 </div>
 
+<!-- SQL 8 -->
+<div class="card">
+<div class="tag">BOM / POWER QUERY</div>
+<h3>TIP3 Material Dependency Analysis</h3>
+
+<div class="case">
+<b>Problem:</b> TIP3 ham maddelerinin sadece belirli OVR ürünlerinde kullanılıp kullanılmadığı takip edilemiyordu.<br><br>
+<b>Solution:</b> EXISTS / NOT EXISTS yapısı ile sadece OVR ve MUH_DETAYKODU=202 mamullerinde kullanılan TIP3 ham maddeleri filtrelendi.<br><br>
+<b>Impact:</b> Ürün bağımlılığı görünürlüğü sağlandı, yanlış kullanım ve satın alma riski azaltıldı.
+</div>
+
+<div class="btn" onclick="show('sql8')">Show Full SQL</div>
+</div>
+
 </div>
 
 <!-- MODAL -->
@@ -356,8 +370,17 @@ SELECT ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no,
 SUM( CASE WHEN ss.gckod = 'G' THEN ss.miktar WHEN ss.gckod = 'C' THEN -ss.miktar ELSE 0 END ) 
 AS miktar FROM tblseritra ss JOIN TBLSTSABIT sk ON sk.stok_kodu = ss.stok_kodu WHERE ss.depokod = 166
 GROUP BY ss.depokod, ss.stok_kodu, sk.stok_adi, ss.seri_no HAVING SUM( CASE WHEN 
-ss.gckod = 'G' THEN ss.miktar WHEN ss.gckod = 'C' THEN -ss.miktar ELSE 0 END ) > 0`
+ss.gckod = 'G' THEN ss.miktar WHEN ss.gckod = 'C' THEN -ss.miktar ELSE 0 END ) > 0`,
 
+sql8: 
+`SELECT RM.HAM_KODU, SBHAM.STOK_ADI AS HAMMADDE_ADI, SBMAMUL.STOK_KODU AS MAMUL_KODU,
+SBMAMUL.STOK_ADI AS MAMUL_ADI, SBMAMUL.GRUP_KODU, SBMAMUL.MUH_DETAYKODU, CR.KULL5S FROM TBLSTOKURM RM
+INNER JOIN TBLCARISTOK CR ON CR.STOK_KODU = RM.HAM_KODU INNER JOIN TBLSTSABIT SBHAM
+ON SBHAM.STOK_KODU = RM.HAM_KODU INNER JOIN TBLSTSABIT SBMAMUL ON SBMAMUL.STOK_KODU = RM.MAMUL_KODU
+WHERE ISNULL(CR.KULL5S,'') LIKE 'TIP3%' AND SBMAMUL.GRUP_KODU LIKE 'OVR%' AND SBMAMUL.MUH_DETAYKODU = '202'
+AND NOT EXISTS (SELECT 1 FROM TBLSTOKURM X INNER JOIN TBLSTSABIT SB2 ON SB2.STOK_KODU = X.MAMUL_KODU
+WHERE X.HAM_KODU = RM.HAM_KODU AND NOT (SB2.GRUP_KODU LIKE 'OVR%' AND SB2.MUH_DETAYKODU = '202'))
+ORDER BY RM.HAM_KODU`,
 };
 
 function show(k){
